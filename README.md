@@ -1,0 +1,1 @@
+# aspnetcore-mvc-cosmosdb-webjob-image-resizer-sample
