@@ -20,5 +20,7 @@ namespace Images.Models
         public string ImageFileName { get; set; }
 
         public string ImageFileUrl { get; set; }
+
+        public string ThumbnailFileUrl { get; set; }
     }
 }

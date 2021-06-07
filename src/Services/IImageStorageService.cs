@@ -14,5 +14,7 @@ namespace Images.Services
         Task<bool> DeleteImage(string fileName);
 
         string GetImageUrl(string fileName);
+
+        string GetImageUrl(string containerName, string fileName);
     }
 }

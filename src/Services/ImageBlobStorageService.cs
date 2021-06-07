@@ -34,12 +34,22 @@
             // Upload the file
             await blobClient.DeleteIfExistsAsync(Azure.Storage.Blobs.Models.DeleteSnapshotsOption.IncludeSnapshots);
 
+            // delete thumbnail
+            Uri thumbnailUri = new Uri(GetImageUrl("thumbnails", fileName));            
+            BlobClient thumbnailClient = new BlobClient(thumbnailUri, storageCredentials);
+            await thumbnailClient.DeleteIfExistsAsync(Azure.Storage.Blobs.Models.DeleteSnapshotsOption.IncludeSnapshots);
+
             return await Task.FromResult(true);
         }
 
         public string GetImageUrl(string fileName)
         {
-            return $"https://{_storageConfig.Account}.blob.core.windows.net/{_storageConfig.ImageContainerName}/{fileName}";
+            return GetImageUrl(_storageConfig.ImageContainerName, fileName);
+        }
+
+        public string GetImageUrl(string containerName, string fileName)
+        {
+            return $"https://{_storageConfig.Account}.blob.core.windows.net/{containerName}/{fileName}";
         }
 
         public async Task<bool> UploadImage(Stream fileStream, string fileName)

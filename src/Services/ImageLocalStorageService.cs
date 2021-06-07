@@ -45,5 +45,10 @@
         {
             return $"~/images/{fileName}";
         }
+
+        public string GetImageUrl(string containerName, string fileName)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

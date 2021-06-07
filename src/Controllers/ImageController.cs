@@ -164,6 +164,7 @@ namespace Images.Controllers
                 viewModel.Name = image.Name;
                 viewModel.ImageFileName = image.FileName;
                 viewModel.ImageFileUrl = _imageStorageService.GetImageUrl(image.FileName);
+                viewModel.ThumbnailFileUrl = _imageStorageService.GetImageUrl("thumbnails", image.FileName);
             }
             return View(viewModel);
         }
