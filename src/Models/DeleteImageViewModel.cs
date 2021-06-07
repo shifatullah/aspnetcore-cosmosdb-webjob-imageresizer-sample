@@ -18,5 +18,7 @@ namespace Images.Models
 
         [DisplayName("File Name")]
         public string ImageFileName { get; set; }
+
+        public string ImageFileUrl { get; set; }
     }
 }

@@ -17,13 +17,16 @@ namespace Images.Controllers
     {
         IImageDbService _imageDbService;
         IWebHostEnvironment _hostEnvironment;
+        IImageStorageService _imageStorageService;
 
         public ImageController(
             IImageDbService imageDbService,
-            IWebHostEnvironment hostEnvironment)
+            IWebHostEnvironment hostEnvironment,
+            IImageStorageService imageStorageService)
         {
             _imageDbService = imageDbService;
             _hostEnvironment = hostEnvironment;
+            _imageStorageService = imageStorageService;
         }
 
         public async Task<ViewResult> Index()
@@ -106,14 +109,9 @@ namespace Images.Controllers
                     string fileNameWithDate = $"{fileName}-{DateTime.Now.ToString("s").Replace(":","-")}{fileExtension}";
                     image.FileName = fileNameWithDate;                    
 
-                    // save image to wwwroot/image
-                    string wwwRootPath = _hostEnvironment.WebRootPath;
-                    string path = Path.Combine(wwwRootPath + "/images/", fileNameWithDate);
-                    using (var fileStream = new FileStream(path, FileMode.Create))
-                    {
-                        await model.ImageFile.CopyToAsync(fileStream);
-                    }
-                    
+                    // upload file
+                    await _imageStorageService.UploadImage(model.ImageFile.OpenReadStream(), fileNameWithDate);
+
                     // update record
                     await _imageDbService.UpdateItemAsync(image.Id, image);
                 }
@@ -143,11 +141,9 @@ namespace Images.Controllers
 
             if (image != null)
             {
-                // delete image from wwwroot/image                
-                var imagePath = Path.Combine(_hostEnvironment.WebRootPath, "images", image.FileName);
-                if (System.IO.File.Exists(imagePath))
-                    System.IO.File.Delete(imagePath);
-                
+                // delete the file
+                await _imageStorageService.DeleteImage(image.FileName);
+
                 //delete the record                
                 await _imageDbService.DeleteItemAsync(model.Id);
 
@@ -166,7 +162,8 @@ namespace Images.Controllers
             {                
                 viewModel.Id = image.Id;
                 viewModel.Name = image.Name;
-                viewModel.ImageFileName = image.FileName;                
+                viewModel.ImageFileName = image.FileName;
+                viewModel.ImageFileUrl = _imageStorageService.GetImageUrl(image.FileName);
             }
             return View(viewModel);
         }

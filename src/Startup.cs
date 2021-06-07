@@ -28,6 +28,9 @@ namespace Images
             services.AddSingleton(Configuration.GetSection("CosmosDb"));
             services.AddSingleton(InitializeCosmosClientInstance(Configuration.GetSection("CosmosDb")));
             services.AddSingleton<IImageDbService, ImageDbService>();
+            services.AddSingleton<IImageStorageService, ImageBlobStorageService>();
+
+            services.Configure<AzureStorageConfig>(Configuration.GetSection("AzureStorage"));
 
             services.AddControllersWithViews();
         }
