@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "New Image";
+}
+
+@model ImageViewModel;
+
+<div class="container">
+    <div class="py-5 text-center">
+        <h2>New Image</h2>
+        <p class="lead">Here image information can be entered. Internally each image has an auto generated Id.<br />
+        Only image name information is required from the user. Validation is performed at client.</p>
+    </div>
+</div>
+
+<form asp-controller="Image" asp-action="Edit" method="post">
+    @if (!string.IsNullOrWhiteSpace(Model.Id))
+    {
+        <div class="form-group row mb-3">
+            <div class="col-sm-12">
+                <label for="Id">Id</label>
+                <span class="form-control">@Model.Id</span>
+            </div>
+        </div>
+    }
+    <div class="form-group row mb-3">
+        <div class="col-sm-12">
+            <label for="Name">Name</label>
+            <input type="text" class="form-control" asp-for="Name" required>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-12 mb-3">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a class="btn btn-secondary" asp-controller="Image" asp-action="Index" role="button">Cancel</a>
+        </div>
+    </div>
+</form>

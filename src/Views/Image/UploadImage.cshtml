@@ -1,0 +1,46 @@
+﻿@{
+    ViewData["Title"] = "Upload Image";
+}
+
+@model UploadImageViewModel;
+
+<div class="container">
+    <div class="py-5 text-center">
+        <h2>Upload Image</h2>
+        <p class="lead">Here image file can be uplodaded. It's file name will be stored in Cosmos BD Image container.<br />
+        Image file itself will be uploaded to Blob container.</p><br />
+    </div>
+</div>
+
+<form asp-controller="Image" asp-action="UploadImage" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group row mb-3">
+        <div class="col-sm-12">
+            <label for="Id">Id</label>
+            <span class="form-control">@Model.Id</span>
+        </div>
+    </div>
+    <div class="form-group row mb-3">
+        <div class="col-sm-12">
+            <label for="Name">Name</label>
+            <input type="text" class="form-control" asp-for="Name" required>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    </div>
+    @*<div class="form-group row mb-3">
+            <label asp-for="Title" class="control-label"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>*@
+    <div class="form-group">
+        <label asp-for="ImageFile" class="control-label"></label>
+        <input asp-for="ImageFile" accept="image/*" />
+        <span asp-validation-for="ImageFile" class="text-danger"></span>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-12 mb-3">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a class="btn btn-secondary" asp-controller="Image" asp-action="Index" role="button">Cancel</a>
+        </div>
+    </div>
+</form>

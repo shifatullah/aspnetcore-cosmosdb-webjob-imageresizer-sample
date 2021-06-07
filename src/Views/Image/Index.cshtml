@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Images List";
+}
+
+@using Images.Entities
+@model ImageListViewModel
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <a class="btn btn-primary" role="button" asp-controller="Image" asp-action="New">New Image</a>
+        </div>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th style="width: 25%" scope="col">Id</th>
+                <th style="width: 25%" scope="col">Name</th>
+                <th style="width: 25%" scope="col">FileName</th>
+                <th style="width: 25%" scope="col">Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (Image image in Model.Images)
+            {
+                <tr>
+                    <td scope="row">@image.Id</td>
+                    <td>@image.Name</td>
+                    <td>@image.FileName</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@image.Id">Edit</a> |
+                        <a asp-action="UploadImage" asp-route-id="@image.Id">Upload Image</a> |
+                        <a asp-action="DeleteImage" asp-route-id="@image.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

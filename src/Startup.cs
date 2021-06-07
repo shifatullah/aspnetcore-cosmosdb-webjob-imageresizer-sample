@@ -1,6 +1,8 @@
+using Images.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -9,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ImageResizer
+namespace Images
 {
     public class Startup
     {
@@ -20,10 +22,14 @@ namespace ImageResizer
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // This method gets called by the runtime. Use this method to add services to Fthe container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
+            services.AddSingleton(Configuration.GetSection("CosmosDb"));
+            services.AddSingleton(InitializeCosmosClientInstance(Configuration.GetSection("CosmosDb")));
+            services.AddSingleton<IImageDbService, ImageDbService>();
+
+            services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,8 +55,30 @@ namespace ImageResizer
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        /// <summary>
+        /// Creates a Cosmos DB client instance
+        /// </summary>
+        /// <returns></returns>
+        private static CosmosClient InitializeCosmosClientInstance(IConfigurationSection configurationSection)
+        {
+            string account = configurationSection.GetSection("Account").Value;
+            string key = configurationSection.GetSection("Key").Value;
+            //var options = new CosmosClientOptions()
+            //{
+            //    SerializerOptions = new CosmosSerializationOptions()
+            //    {
+            //        PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
+            //    }
+            //};
+            CosmosClient client = new CosmosClient(account, key);
+
+            return client;
         }
     }
 }

@@ -10,16 +10,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["ImageResizer.csproj", "."]
-RUN dotnet restore "./ImageResizer.csproj"
+COPY ["Images.csproj", "."]
+RUN dotnet restore "./Images.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "ImageResizer.csproj" -c Release -o /app/build
+RUN dotnet build "Images.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "ImageResizer.csproj" -c Release -o /app/publish
+RUN dotnet publish "Images.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "ImageResizer.dll"]
+ENTRYPOINT ["dotnet", "Images.dll"]
